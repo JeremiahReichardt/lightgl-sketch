@@ -7,10 +7,16 @@ var mesh;
 var matrix;
 var shader;
 
+
 function Component() {
-  mesh = global.GL.Mesh.sphere({normals: true, radius: 4}).computeWireframe();
-  shader = new global.GL.Shader(baseV(), baseF());
-  matrix = new global.GL.Matrix();
+  this.mesh = global.GL.Mesh.sphere({normals: true, radius: 4}).computeWireframe();
+  this.shader = new global.GL.Shader(baseV(), baseF());
+  this.matrix = new global.GL.Matrix();
+  this.x = x;
+  this.y = y;
+  this.z = z;
+  this.s = s;//?
+  this.r = r;//?
 }
 
 Component.prototype.update = function(seconds) {
@@ -18,14 +24,8 @@ Component.prototype.update = function(seconds) {
 };
 
 Component.prototype.draw = function(gl) {
-  this.rotate(0.075, 0, 1, 0);
   mesh.compile();
   shader.uniforms({color: [0, 0, 0]}).draw(mesh, gl.LINES);
-};
-
-Component.prototype.translate = function(x, y, z) {
-  global.GL.Matrix.translate(x, y, z, matrix);
-  mesh.transform(matrix);
 };
 
 Component.prototype.scale = function(x, y, z) {

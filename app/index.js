@@ -14,7 +14,11 @@ window.onload = function() {
   customContainer.appendChild(gui.domElement);
 
   components.push( new Camera() );
-  components.push( new Sphere() );
+  components.push( new Sphere(0 , 0 ,0 , 1.5) );
+  components.push( new Sphere(-2.5 , -2.5 ,0 , 1.0) );
+
+  components[1].TweenTo(0 , 0 , -10 , 2);
+  components[2].TweenTo(3 , 0, -10 , 0.075 * 2);
 
   gl.onupdate = function(seconds) {
     for ( i = 0; i < components.length; i++ ) {
@@ -25,8 +29,11 @@ window.onload = function() {
   gl.ondraw = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.loadIdentity();
+
     for ( i = 0; i < components.length; i++ ) {
+      gl.pushMatrix();
       components[i].draw(gl);
+      gl.popMatrix();
     }
   };
 
