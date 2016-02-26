@@ -1,11 +1,3 @@
-/*
-treat rotation as rotation RATE
-and just deal with not being able to rotate
-things via a tween. Just Tween the rotation rate!
-...maybe same thing with scale so I can have a pulse effect.
-
- */
-
 'use strict';
 
 var config = require('../config');
@@ -28,13 +20,20 @@ function Sphere(x, y, z, scale, rotation) {
   if (rotation === undefined ) {
     rotation = 0;
   }
-  this.mesh = global.GL.Mesh.sphere({normals: true, radius: 4}).computeWireframe();
+  this.mesh = global.GL.Mesh.sphere({normals: true}).computeWireframe();
   this.shader = new global.GL.Shader(baseV(), baseF());
   this.matrix = new global.GL.Matrix();
   this.shader.uniforms({color: config.hookPink});
+  this.rotationRateX = 0;
+  this.rotationRateY = 0;
+  this.rotationRateZ = 0;
+  this.scaleRateX = 0;
+  this.scaleRateY = 0;
+  this.scaleRateZ = 0;
   this.x = x;
   this.y = y;
   this.z = z;
+  this.currentScale = scale;
   this.scale(scale, scale, scale);
   this.rotate(rotation);
 }
@@ -44,12 +43,16 @@ Sphere.prototype.update = function(seconds) {
 };
 
 Sphere.prototype.draw = function(gl) {
-  //this.rotate(0.075, 0, 1, 0);
+  this.rotate(this.rotationRateX, this.rotationRateY, this.rotationRateZ, 0);
   gl.translate(this.x, this.y, this.z);
+  this.scale(this.scaleRateX, this.scaleRateY, this.scaleRateZ);
   this.shader.draw(this.mesh, gl.LINES);
 };
 
 Sphere.prototype.scale = function(x, y, z) {
+  if ( x === 0 && y === 0 && z === 0 ) {
+    return;
+  }
   global.GL.Matrix.scale(x, y, z, this.matrix);
   this.mesh.transform(this.matrix);
 };
@@ -62,8 +65,7 @@ Sphere.prototype.rotate = function(r) {
   this.mesh.transform(this.matrix);
 };
 
-Sphere.prototype.TweenTo = function(x, y, z, r) {
-  TweenLite.to(this, 1, {x:x, y:y, z:z, onUpdateScope:this, onUpdate: this.rotate, onUpdateParams: [r]});
+Sphere.prototype.TweenTo = function(x, y, z, t) {
+  global.TweenLite.to(this, t, {x:x, y:y, z:z});
 };
-
 module.exports = Sphere;
