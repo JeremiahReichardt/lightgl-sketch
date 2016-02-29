@@ -1,10 +1,10 @@
 /*
 this is just a base shader
-pass in [r,g,b]
-good for drawing mesh lines with a sspecific color I guess.
+pass in [r,g,b,a]
+good for drawing mesh lines with a specific color I guess.
 */
-uniform vec3 color;
+uniform vec4 color;
 
 void main() {
-  gl_FragColor = vec4(color, 0);
+  gl_FragColor = color;
 }

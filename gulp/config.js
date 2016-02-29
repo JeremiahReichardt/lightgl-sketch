@@ -6,7 +6,7 @@ var config = {
 
   flags: {
     minify: false,
-    sourcemap: true
+    sourcemap: false
   },
 
   clean: {

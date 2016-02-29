@@ -13,7 +13,7 @@ function SphereSwarm(gl) {
   this.drawables = [];
 
   // create the swarm
-  var swarmCount = Math.random() * 10 + 10;
+  var swarmCount = Math.random() * 10 + 5;
   for( var i = 0; i < swarmCount; i++ ) {
     this.components.push(new Vec3WaveGenerator(
       Math.random(),
@@ -23,7 +23,12 @@ function SphereSwarm(gl) {
       Math.random()<0.5,
       Math.random()<0.5
     ));
-    this.drawables.push(new Sphere(this.x, this.y, this.z, Math.random()));
+    var sphere = new Sphere(this.x, this.y, this.z, Math.random());
+    sphere.rotationRateX = Math.random();
+    sphere.rotationRateY = Math.random();
+    sphere.rotationRateZ = Math.random();
+    sphere.TweenScaleRate( 0.50, 100  );
+    this.drawables.push(sphere);
   }
 }
 

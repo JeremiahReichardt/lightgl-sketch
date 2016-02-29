@@ -4,6 +4,9 @@ var Sphere = require('../components/Sphere');
 var Vec3WaveGenerator = require('../components/Vec3WaveGenerator');
 
 function Planet(gl) {
+
+  console.log(gl);
+
   this.gl = gl;
   this.x = 0;
   this.y = 0;
@@ -19,14 +22,13 @@ function Planet(gl) {
   // create the moon
   this.sphereMoon = new Sphere(0, 0, 0, 0.15);
   this.sphereMoon.rotationRateX = 0.35;
+  this.sphereMoon.setColor(1,1,1,0.3);
 
   // add drawables
   this.drawables.push(this.spherePlanet);
   this.drawables.push(this.sphereMoon);
 
-  // add components
-  this.components.push(this.spherePlanet);
-  this.components.push(this.sphereMoon);
+  this.spherePlanet.TweenScaleRate(0.99, 1);
 }
 
 Planet.prototype.update = function(seconds) {
@@ -54,8 +56,8 @@ Planet.prototype.draw = function() {
   }
 };
 
-Planet.prototype.TweenTo = function(x, y, z) {
-  global.TweenLite.to(this, 1, {x:x, y:y, z:z});
+Planet.prototype.TweenTo = function(x, y, z, t) {
+  global.TweenLite.to(this, t, {x:x, y:y, z:z});
 };
 
 module.exports = Planet;

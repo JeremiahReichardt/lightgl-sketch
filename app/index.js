@@ -14,8 +14,8 @@ function App() {
 
   this.entities.push( this.planet );
 
-  this.camera.TweenTo(0, 0, -10, 1);
-  this.planet.TweenTo(-2, 0, 0, 1);
+  this.camera.TweenTo(0, 0, -10, 0);
+  this.planet.TweenTo(-2, 0, 0, 0);
 
   var planet = this.planet;
   this.gl.onmousemove = function(e) {
@@ -44,6 +44,9 @@ function App() {
   this.gl.animate();
   this.gl.enable(this.gl.CULL_FACE);
   this.gl.enable(this.gl.POLYGON_OFFSET_FILL);
+  this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE);
+  this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+  this.gl.enable(this.gl.BLEND);
   this.gl.polygonOffset(1, 1);
   this.gl.clearColor(0.8, 0.8, 0.8, 1);
   this.gl.enable(this.gl.DEPTH_TEST);
