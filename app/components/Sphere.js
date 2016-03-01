@@ -15,7 +15,7 @@ var baseF = require('../shaders/base.frag');
  * @param rotation
  * @constructor
  */
-function Sphere(x, y, z, scale, rotation) {
+function Sphere(gl, x, y, z, scale, rotation) {
   if (x === undefined ) {
     x = 0;
   }
@@ -33,8 +33,14 @@ function Sphere(x, y, z, scale, rotation) {
   }
   this.mesh = global.GL.Mesh.sphere({normals: true}).computeWireframe();
   // this might not be the best route to go down because shouldn't i share them?
-  this.shader = new global.GL.Shader(baseV(), baseF());
+
+  this.shader =  new global.GL.Shader(baseV(), baseF());
+
   this.matrix = new global.GL.Matrix();
+  this.r = 1;
+  this.g = 0;
+  this.b = 0.314;
+  this.a = 0.5;
   this.shader.uniforms({color: config.hookPink});
   this.rotationRateX = 0;
   this.rotationRateY = 0;
@@ -90,8 +96,23 @@ Sphere.prototype.rotate = function(r) {
   this.mesh.transform(this.matrix);
 };
 
+/**
+ * Sets the color of the sphere
+ * @param r
+ * @param g
+ * @param b
+ * @param a
+ */
 Sphere.prototype.setColor = function(r, g, b, a) {
-  this.shader.uniforms({color: [r, g, b, a]});
+  this.r = r;
+  this.g = g;
+  this.b = b;
+  this.a = a;
+  this._updateColor();
+};
+
+Sphere.prototype._updateColor = function() {
+  this.shader.uniforms({color: [this.r, this.g, this.b, this.a]});
 };
 
 /**
@@ -103,7 +124,7 @@ Sphere.prototype.setColor = function(r, g, b, a) {
  * @constructor
  */
 Sphere.prototype.TweenTo = function(x, y, z, t) {
-  global.TweenLite.to(this, t, {x:x, y:y, z:z});
+  global.TweenMax.to(this, t, {x:x, y:y, z:z});
 };
 
 /**
@@ -113,9 +134,7 @@ Sphere.prototype.TweenTo = function(x, y, z, t) {
  * @constructor
  */
 Sphere.prototype.TweenScaleRate = function(scaleRate, t) {
-  global.TweenLite.to(this, t, {ease: Strong.easeInOut, scaleRate: scaleRate, onCompleteScope: this, onComplete: function() {
-    this.scaleRate = 1;
-  }});
+  global.TweenMax.to(this, t, {bezier:[{scaleRate: scaleRate}, {scaleRate: 1}]});
 };
 
 /**
@@ -127,16 +146,37 @@ Sphere.prototype.TweenScaleRate = function(scaleRate, t) {
  * @constructor
  */
 Sphere.prototype.TweenRotationRate = function(rotationRateX, rotationRateY, rotationRateZ, t) {
-  global.TweenLite.to(this, t, {
-    ease: Strong.easeInOut,
+  var start = {
     rotationRateX: rotationRateX,
     rotationRateY: rotationRateY,
-    rotationRateZ: rotationRateZ,
-    onCompleteScope: this, onComplete: function() {
-      this.rotationRateX = 0;
-      this.rotationRateY = 0;
-      this.rotationRateZ = 0;
-  }});
+    rotationRateZ: rotationRateZ
+  };
+  var end = {
+    rotationRateX: 0,
+    rotationRateY: 0,
+    rotationRateZ: 0
+  };
+  global.TweenMax.to(this, t, {bezier:[start, end]});
 };
+
+/**
+ * Tweens the color of the sphere
+ * @param r
+ * @param g
+ * @param b
+ * @param a
+ * @param t
+ * @constructor
+ */
+Sphere.prototype.TweenRGBA = function(r, g, b, a, t) {
+  var _updateColor = this._updateColor.bind(this);
+  global.TweenMax.to(this, t, {r: r, g: g, b: b, a: a, onUpdate: _updateColor});
+};
+
+Sphere.prototype.TweenA = function(a, t) {
+  var _updateColor = this._updateColor.bind(this);
+  global.TweenMax.to(this, t, {a: a, onUpdate: _updateColor});
+};
+
 
 module.exports = Sphere;

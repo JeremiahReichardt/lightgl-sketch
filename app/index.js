@@ -4,9 +4,14 @@ var config = require('./config');
 var Camera = require('./cameras/Base');
 var Planet = require('./entities/Planet');
 var SphereSwarm = require('./entities/SphereSwarm');
+var Shaders = require('./shaders/Shaders');
+
+var DOMentities = document.querySelector('#entities');
 
 function App() {
   this.gl = GL.create();
+  this.gl.shaders = new Shaders();
+
   this.entities = [];
 
   this.camera = new Camera(this.gl);
@@ -15,7 +20,7 @@ function App() {
   this.entities.push( this.planet );
 
   this.camera.TweenTo(0, 0, -10, 0);
-  this.planet.TweenTo(-2, 0, 0, 0);
+  this.planet.TweenTo(0, 0, 0, 0);
 
   var planet = this.planet;
   this.gl.onmousemove = function(e) {
@@ -35,6 +40,7 @@ function App() {
     ss.x = x;
     ss.y = y * -1;
     entities.push(ss);
+    console.log( ss.remove );
   }, false);
 
   this.gl.onupdate = this.onupdate.bind(this);
@@ -55,7 +61,11 @@ function App() {
 App.prototype.onupdate = function(seconds) {
   for ( var i = 0; i < this.entities.length; i++ ) {
     this.entities[i].update(seconds);
+    if (this.entities[i].remove) {
+      this.entities.splice(i, 1);
+    }
   }
+  DOMentities.innerText = 'entities :' + this.entities.length;
 };
 
 App.prototype.ondraw = function(seconds) {
