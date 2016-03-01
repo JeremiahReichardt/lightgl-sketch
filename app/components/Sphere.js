@@ -34,7 +34,8 @@ function Sphere(gl, x, y, z, scale, rotation) {
   this.mesh = global.GL.Mesh.sphere({normals: true}).computeWireframe();
   // this might not be the best route to go down because shouldn't i share them?
 
-  this.shader =  new global.GL.Shader(baseV(), baseF());
+  //this.shader = new global.GL.Shader(baseV(), baseF());
+  this.shader = gl.shaders.base;
 
   this.matrix = new global.GL.Matrix();
   this.r = 1;
@@ -69,6 +70,7 @@ Sphere.prototype.draw = function(gl) {
   this.rotate(this.rotationRateX, this.rotationRateY, this.rotationRateZ, 0);
   this.scale(this.scaleRate);
   gl.translate(this.x, this.y, this.z);
+  this.shader.uniforms({color: [this.r, this.g, this.b, this.a]});
   this.shader.draw(this.mesh, gl.LINES);
 };
 
@@ -108,11 +110,6 @@ Sphere.prototype.setColor = function(r, g, b, a) {
   this.g = g;
   this.b = b;
   this.a = a;
-  this._updateColor();
-};
-
-Sphere.prototype._updateColor = function() {
-  this.shader.uniforms({color: [this.r, this.g, this.b, this.a]});
 };
 
 /**
@@ -169,13 +166,11 @@ Sphere.prototype.TweenRotationRate = function(rotationRateX, rotationRateY, rota
  * @constructor
  */
 Sphere.prototype.TweenRGBA = function(r, g, b, a, t) {
-  var _updateColor = this._updateColor.bind(this);
-  global.TweenMax.to(this, t, {r: r, g: g, b: b, a: a, onUpdate: _updateColor});
+  global.TweenMax.to(this, t, {r: r, g: g, b: b, a: a});
 };
 
 Sphere.prototype.TweenA = function(a, t) {
-  var _updateColor = this._updateColor.bind(this);
-  global.TweenMax.to(this, t, {a: a, onUpdate: _updateColor});
+  global.TweenMax.to(this, t, {a: a});
 };
 
 

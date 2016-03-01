@@ -24,11 +24,16 @@ function SphereSwarm(gl) {
       Math.random()<0.5,
       Math.random()<0.5
     ));
-    var sphere = new Sphere(gl, this.x, this.y, this.z, 0.0001);
+    var sphere = new Sphere(gl, this.x, this.y, this.z, 0.0004);
     sphere.rotationRateX = Math.random();
     sphere.rotationRateY = Math.random();
     sphere.rotationRateZ = Math.random();
-    sphere.TweenScaleRate(1.0895, (Math.random() * 1.5) + 2);
+
+    var min = 1.0795;
+    var max = 1.0895;
+    var speed = Math.random() * (max - min) + min;
+
+    sphere.TweenScaleRate(speed, (Math.random() * 1.5) + 2);
     var TweenA = sphere.TweenA.bind(sphere);
     TweenMax.to( sphere, 5 + (Math.random() * 2),
       {
@@ -55,19 +60,20 @@ SphereSwarm.prototype.update = function(seconds) {
       this.components.splice(i, 1);
       if ( this.drawables.length === 0 ) {
         this.remove = true;
-        console.log( this.remove );
       }
     }
   }
 };
 
 SphereSwarm.prototype.draw = function() {
+  this.gl.pushMatrix();
   for ( var i = 0; i < this.drawables.length; i++ ) {
     this.gl.pushMatrix();
     this.gl.translate(this.x, this.y, this.z);
     this.drawables[i].draw(this.gl);
     this.gl.popMatrix();
   }
+  this.gl.popMatrix();
 };
 
 SphereSwarm.prototype.TweenTo = function(x, y, z, t) {
