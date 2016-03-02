@@ -1,6 +1,7 @@
 'use strict';
 
 var Sphere = require('../components/Sphere');
+var Billboard = require('../components/Billboard');
 var Vec3WaveGenerator = require('../components/Vec3WaveGenerator');
 
 function Planet(gl) {
@@ -14,26 +15,24 @@ function Planet(gl) {
   this.drawables = [];
 
   // create the planet
-  this.spherePlanet = new Sphere(gl, 0, 0, 0, 1.5);
+  this.spherePlanet = new Billboard(gl, 0, 0, 2, 4);
   this.spherePlanet.rotationRateX = 0.05;
 
   // create the moon
   this.sphereMoon = new Sphere(gl, 0, 0, 0, 0.15);
   this.sphereMoon.rotationRateX = 0.35;
-  this.sphereMoon.setColor(1,1,1,0.3);
 
   // add drawables
   this.drawables.push(this.spherePlanet);
   this.drawables.push(this.sphereMoon);
 
-  this.spherePlanet.TweenScaleRate(.98, 1);
-  //this.spherePlanet.TweenRGBA(0,0,0,0, 0.5);
+  this.spherePlanet.TweenScaleRate(0.98, 1);
 }
 
 Planet.prototype.update = function(seconds) {
 
-  var x = 2 * Math.sin(this.angle * Math.PI / 180);
-  var z = 2 * Math.cos(this.angle * Math.PI / 180);
+  var x = 3.5 * Math.sin(this.angle * Math.PI / 180);
+  var z = 3.5 * Math.cos(this.angle * Math.PI / 180);
 
   this.angle+=0.2;
   if (this.angle>360) this.angle = 0;

@@ -1,10 +1,9 @@
 'use strict';
 
-// 400051
+// 400051, 406026
 
 var config = require('../config');
-var baseV = require('../shaders/base.vert');
-var baseF = require('../shaders/base.frag');
+
 
 /**
  * Sphere
@@ -32,11 +31,7 @@ function Sphere(gl, x, y, z, scale, rotation) {
     rotation = 0;
   }
   this.mesh = global.GL.Mesh.sphere({normals: true}).computeWireframe();
-  // this might not be the best route to go down because shouldn't i share them?
-
-  //this.shader = new global.GL.Shader(baseV(), baseF());
   this.shader = gl.shaders.base;
-
   this.matrix = new global.GL.Matrix();
   this.r = 1;
   this.g = 0;
@@ -169,6 +164,12 @@ Sphere.prototype.TweenRGBA = function(r, g, b, a, t) {
   global.TweenMax.to(this, t, {r: r, g: g, b: b, a: a});
 };
 
+/**
+ * Tweens just the alpha of the sphere
+ * @param a
+ * @param t
+ * @constructor
+ */
 Sphere.prototype.TweenA = function(a, t) {
   global.TweenMax.to(this, t, {a: a});
 };
