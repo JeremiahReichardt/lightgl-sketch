@@ -4,6 +4,7 @@ var config = require('./config');
 var Camera = require('./cameras/Base');
 var Planet = require('./entities/Planet');
 var SphereSwarm = require('./entities/SphereSwarm');
+var GlowBallStream = require('./entities/GlowBallStream');
 var Shaders = require('./shaders/Shaders');
 
 var DOMentities = document.querySelector('#entities');
@@ -33,14 +34,13 @@ function App() {
   var entities = this.entities;
   var gl = this.gl;
   this.gl.canvas.addEventListener('click', function(e) {
-    var ss = new SphereSwarm(gl);
+    var ss = new GlowBallStream(gl);
     var scale = 5;
     var x = ( ( e.clientX / window.innerWidth ) * scale ) - (scale/2);
     var y = ( ( e.clientY / window.innerHeight ) * scale ) - (scale/2);
     ss.x = x;
     ss.y = y * -1;
     entities.push(ss);
-    console.log( ss.remove );
   }, false);
 
   this.gl.onupdate = this.onupdate.bind(this);
@@ -48,14 +48,6 @@ function App() {
 
   this.gl.fullscreen();
   this.gl.animate();
-  this.gl.enable(this.gl.CULL_FACE);
-  this.gl.enable(this.gl.POLYGON_OFFSET_FILL);
-  this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE);
-  this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-  this.gl.enable(this.gl.BLEND);
-  this.gl.polygonOffset(1, 1);
-  this.gl.clearColor(0.8, 0.8, 0.8, 1);
-  this.gl.enable(this.gl.DEPTH_TEST);
 }
 
 App.prototype.onupdate = function(seconds) {
@@ -70,6 +62,14 @@ App.prototype.onupdate = function(seconds) {
 
 App.prototype.ondraw = function(seconds) {
   this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+  this.gl.enable(this.gl.CULL_FACE);
+  this.gl.enable(this.gl.DEPTH_TEST);
+  this.gl.clearColor(0,0,0,0);
+  this.gl.clearDepth(1);
+  this.gl.depthFunc(this.gl.LESS);
+  this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+  this.gl.enable(this.gl.BLEND);
+
   this.gl.loadIdentity();
 
   this.gl.pushMatrix();

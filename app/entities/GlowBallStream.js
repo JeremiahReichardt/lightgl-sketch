@@ -1,9 +1,9 @@
 'use strict';
 
-var Sphere = require('../components/Sphere');
+var Billboard = require('../components/Billboard');
 var Vec3WaveGenerator = require('../components/Vec3WaveGenerator');
 
-function SphereSwarm(gl) {
+function GlowBallStream(gl) {
   this.remove = false;
   this.gl = gl;
   this.x = 0;
@@ -12,7 +12,9 @@ function SphereSwarm(gl) {
   this.angle = 0;
   this.components = [];
   this.drawables = [];
+  this.upwardRates = [];
 
+  var min, max, speed;
   // create the swarm
   var swarmCount = Math.random() * 10 + 5;
   for( var i = 0; i < swarmCount; i++ ) {
@@ -24,34 +26,32 @@ function SphereSwarm(gl) {
       Math.random()<0.5,
       Math.random()<0.5
     ));
-    var sphere = new Sphere(gl, this.x, this.y, this.z, 0.0004);
-    sphere.rotationRateX = Math.random();
-    sphere.rotationRateY = Math.random();
-    sphere.rotationRateZ = Math.random();
 
-    var min = 1.0795;
-    var max = 1.0895;
-    var speed = Math.random() * (max - min) + min;
+    min = 0.002;
+    max = 0.02;
+    speed = Math.random() * (max - min) + min;
 
-    sphere.TweenScaleRate(speed, (Math.random() * 1.5) + 2);
-    var TweenA = sphere.TweenA.bind(sphere);
-    TweenMax.to( sphere, 5 + (Math.random() * 2),
-      {
-        delay: Math.random() * 3,
-        onComplete:TweenA,
-        onCompleteParams:[0, 1]
-      }
-    );
-    this.drawables.push(sphere);
+    this.upwardRates.push(speed);
+    var billboard = new Billboard(gl, this.x, this.y, this.z, 0.0004);
+    billboard.rotationRateX = Math.random();
+    billboard.rotationRateY = Math.random();
+    billboard.rotationRateZ = Math.random();
+
+    min = 1.0795;
+    max = 1.0895;
+    speed = Math.random() * (max - min) + min;
+
+    billboard.TweenScaleRate(speed, (Math.random() * 1.5) + 2);
+
+    this.drawables.push(billboard);
   }
-  this.TweenTo(this.x, this.y += 4, this.z, 30);
 }
 
-SphereSwarm.prototype.update = function(seconds) {
+GlowBallStream.prototype.update = function(seconds) {
   for ( var i = 0; i < this.components.length; i++ ) {
     this.components[i].update(seconds);
     this.drawables[i].x = this.components[i].x;
-    this.drawables[i].y = this.components[i].y;
+    this.drawables[i].y += this.upwardRates[i];
     this.drawables[i].z = this.components[i].z;
   }
   for ( i = 0; i < this.drawables.length; i++ ) {
@@ -65,19 +65,17 @@ SphereSwarm.prototype.update = function(seconds) {
   }
 };
 
-SphereSwarm.prototype.draw = function() {
+GlowBallStream.prototype.draw = function() {
   this.gl.pushMatrix();
+  this.gl.translate(this.x, this.y, this.z);
   for ( var i = 0; i < this.drawables.length; i++ ) {
-    this.gl.pushMatrix();
-    this.gl.translate(this.x, this.y, this.z);
     this.drawables[i].draw(this.gl);
-    this.gl.popMatrix();
   }
   this.gl.popMatrix();
 };
 
-SphereSwarm.prototype.TweenTo = function(x, y, z, t) {
+GlowBallStream.prototype.TweenTo = function(x, y, z, t) {
   global.TweenMax.to(this, t, {delay: 0, x:x, y:y, z:z});
 };
 
-module.exports = SphereSwarm;
+module.exports = GlowBallStream;

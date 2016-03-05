@@ -26,10 +26,8 @@ function Billboard(gl, x, y, z, scale) {
   if (x === undefined ) {
     scale = 1;
   }
-  this.mesh = GL.Mesh.plane({ coords: true });
-  this.texture = GL.Texture.fromURL('./images/white-circle-with-glow.png');
-  this.texture2 = GL.Texture.fromURL('./images/white-circle-with-glow.png');
-
+  this.mesh = global.GL.Mesh.plane({ coords: true });
+  this.texture = global.GL.Texture.fromURL('./images/white-circle-with-glow.png');
   this.shader = gl.shaders.texture;
   this.matrix = new global.GL.Matrix();
   this.a = 0.5;
@@ -53,24 +51,15 @@ Billboard.prototype.update = function(seconds) {
  * @param gl
  */
 Billboard.prototype.draw = function(gl) {
-  //this.texture.bind(0);
-  //this.scale(this.scaleRate);
-  //gl.translate(this.x, this.y, this.z);
-  //this.shader.uniforms({texture: 0});
-  //this.shader.draw(this.mesh);
-
-  //
+  gl.pushMatrix();
+  this.scale(this.scaleRate);
   gl.translate(this.x, this.y, this.z);
-  var mesh = this.mesh;
-
-  //console.log( this.mesh );
-
   this.texture.bind(0);
-  this.texture2.bind(1);
   this.shader.uniforms({
-    texture: 0,
-    texture2: 1
-  }).draw(mesh);
+    texture: 0
+  }).draw(this.mesh);
+
+  gl.popMatrix();
 };
 
 /**

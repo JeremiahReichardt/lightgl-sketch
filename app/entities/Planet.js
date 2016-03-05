@@ -1,7 +1,6 @@
 'use strict';
 
 var Sphere = require('../components/Sphere');
-var Billboard = require('../components/Billboard');
 var Vec3WaveGenerator = require('../components/Vec3WaveGenerator');
 
 function Planet(gl) {
@@ -15,7 +14,7 @@ function Planet(gl) {
   this.drawables = [];
 
   // create the planet
-  this.spherePlanet = new Billboard(gl, 0, 0, 2, 4);
+  this.spherePlanet = new Sphere(gl, 0, 0, 2, 4);
   this.spherePlanet.rotationRateX = 0.05;
 
   // create the moon
