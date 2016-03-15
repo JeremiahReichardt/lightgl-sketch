@@ -54,7 +54,7 @@ Planet.prototype.draw = function() {
 };
 
 Planet.prototype.TweenTo = function(x, y, z, t) {
-  global.TweenLite.to(this, t, {x:x, y:y, z:z});
+  global.TweenLite.to(this, t, {ease: global.Sine.easeInOut, x:x, y:y, z:z});
 };
 
 module.exports = Planet;

@@ -23,13 +23,13 @@ function App() {
   this.camera.TweenTo(0, 0, -10, 0);
   this.planet.TweenTo(0, -4, 0, 0);
 
-  //var planet = this.planet;
-  //this.gl.onmousemove = function(e) {
-  //  var scale = 5;
-  //  var x = ( ( e.clientX / window.innerWidth ) * scale ) - (scale/2);
-  //  var y = ( ( e.clientY / window.innerHeight ) * scale ) - (scale/2);
-  //  planet.TweenTo(x, y*-1, 0, 1);
-  //};
+  var planet = this.planet;
+  this.gl.onmousemove = function(e) {
+    var scale = 2;
+    var x = ( ( e.clientX / window.innerWidth ) * scale ) - (scale/2);
+    var y = ( ( e.clientY / window.innerHeight ) * scale ) - (scale/2);
+    planet.TweenTo(x, planet.y, 0, 10);
+  };
 
   var entities = this.entities;
   var gl = this.gl;
@@ -61,12 +61,6 @@ App.prototype.onupdate = function(seconds) {
 };
 
 App.prototype.ondraw = function(seconds) {
-  this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-  this.gl.enable(this.gl.CULL_FACE);
-  this.gl.enable(this.gl.DEPTH_TEST);
-  this.gl.clearColor(0,0,0,0);
-  this.gl.clearDepth(1);
-  this.gl.depthFunc(this.gl.LESS);
   this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
   this.gl.enable(this.gl.BLEND);
 
